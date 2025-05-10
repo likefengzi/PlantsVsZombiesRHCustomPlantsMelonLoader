@@ -24,6 +24,20 @@ GameVersion:2.5.0-2.5.1
 
 占位，会发到B站
 
+## 各种工具
+
+[Unity历史版本](https://unity.cn/releases/full)
+
+[dnSpy](https://github.com/dnSpy/dnSpy)
+
+[AssetRipper](https://github.com/AssetRipper/AssetRipper)
+
+[AssetBundles-Browser](https://github.com/Unity-Technologies/AssetBundles-Browser)
+
+[MelonLoader](https://github.com/LavaGang/MelonLoader)
+
+[Infinite75](https://github.com/Infinite-75/PVZRHCustomization)
+
 ## 融合版制作组
 
 融合版制作组：
