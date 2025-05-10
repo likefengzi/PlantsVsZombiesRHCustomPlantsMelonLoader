@@ -6,9 +6,8 @@ using MelonLoader;
 using UnityEngine;
 using System.Reflection;
 
-[assembly: MelonInfo(typeof(CherryHypnoGatlingBlover.MelonLoader.Core), nameof(CherryHypnoGatlingBlover), "1.0.0",
-    "likefengzi",
-    null)]
+[assembly: MelonInfo(typeof(CherryHypnoGatlingBlover.MelonLoader.Core), nameof(CherryHypnoGatlingBlover),
+    "1.0.0", "likefengzi", null)]
 [assembly: MelonGame("LanPiaoPiao", "PlantsVsZombiesRH")]
 [assembly: MelonPlatformDomain(MelonPlatformDomainAttribute.CompatibleDomains.IL2CPP)]
 
@@ -16,6 +15,9 @@ namespace CherryHypnoGatlingBlover.MelonLoader;
 
 public class Core : MelonMod
 {
+    /// <summary>
+    /// 初始化
+    /// </summary>
     public override void OnInitializeMelon()
     {
         //控制台支持中文
