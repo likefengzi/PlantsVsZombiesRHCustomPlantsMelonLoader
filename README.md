@@ -11,3 +11,5 @@
 ## 二创植物
 
 [飞天樱魅射手](/CherryHypnoGatlingBlover.MelonLoader)
+
+[铁桶机枪小喷菇](/GatlingIronPuff.MelonLoader)
