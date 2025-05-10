@@ -236,9 +236,6 @@ public static class Extensions
     }
 }
 
-/// <summary>
-/// 
-/// </summary>
 [HarmonyPatch(typeof(GameAPP))]
 public static class GameAPPPatch
 {
@@ -249,11 +246,10 @@ public static class GameAPPPatch
     [HarmonyPatch("LoadResources")]
     public static void LoadResources()
     {
+        //PlantDataLoader.plantData = new PlantDataLoader.PlantData_[9999999];
         //遍历自定义植物列表
         foreach (var plant in CustomCore.CustomPlants)
         {
-            //都可以重写加长
-            //植物预制体列表
             GameAPP.resourcesManager.plantPrefabs[plant.Key] = plant.Value.Prefab;
             GameAPP.resourcesManager.plantPrefabs[plant.Key].tag = "Plant";
             if (!GameAPP.resourcesManager.allPlants.Contains(plant.Key))
@@ -261,7 +257,8 @@ public static class GameAPPPatch
                 GameAPP.resourcesManager.allPlants.Add(plant.Key);
             }
 
-            //植物数据列表
+            //这个BUG能触发下面的？
+            //MelonLogger.Msg(PlantDataLoader.plantData[0]);
             PlantDataLoader.plantData[(int)plant.Key] = plant.Value.PlantData;
             PlantDataLoader.plantDatas.Add(plant.Key, plant.Value.PlantData);
             //植物预览图列表
@@ -316,6 +313,43 @@ public static class GameAPPPatch
         }
     }
 }
+
+/*
+/// <summary>
+///
+/// 必须在这里Patch，
+/// 调用顺序LoadResources->LoadPlantData，
+/// LoadPlantData中有使用PlantDataLoader.plantData的长度2048
+/// 判断了什么东西，
+/// 只能用Post在判断完再改
+/// 在别的地方改，僵尸会自杀？
+/// </summary>
+[HarmonyPatch(typeof(PlantDataLoader), nameof(PlantDataLoader.LoadPlantData))]
+public class LoadPlantData
+{
+    [HarmonyPostfix]
+    static void Postfix(PlantDataLoader __instance)
+    {
+        MelonLogger.Msg("***************");
+
+
+        if (CustomCore.CustomPlants.Keys.Cast<int>().Max() > 2048)
+        {
+            //扩容植物数据列表
+            //不能用List，复制会出错
+            PlantDataLoader.PlantData_[] newPlantData =
+                new PlantDataLoader.PlantData_[CustomCore.CustomPlants.Keys.Cast<int>().Max() + 1];
+            Array.Copy(PlantDataLoader.plantData, newPlantData, PlantDataLoader.plantData.Count);
+            PlantDataLoader.plantData = newPlantData;
+        }
+
+        foreach (var plant in CustomCore.CustomPlants)
+        {
+            //植物数据列表
+            PlantDataLoader.plantData[(int)plant.Key] = plant.Value.PlantData;
+        }
+    }
+}*/
 
 /// <summary>
 /// 金币
@@ -382,13 +416,10 @@ public static class MousePatch
     {
         for (int i = __result.Count - 1; i >= 0; i--)
         {
-            foreach (Plant plant in __result.GetRange(i, 1))
+            //判断植物存在并且为大坚果类
+            if (__result.ToArray()[i] != null && TypeMgr.BigNut(__result.ToArray()[i].thePlantType))
             {
-                //判断植物存在并且为大坚果类
-                if (plant != null && TypeMgr.BigNut(plant.thePlantType))
-                {
-                    __result.RemoveAt(i);
-                }
+                __result.RemoveAt(i);
             }
         }
     }
@@ -562,14 +593,11 @@ public static class TravelMgrPatch
     {
         for (int i = __result.Count - 1; i >= 0; i--)
         {
-            foreach (int num in __result.GetRange(i, 1))
+            //如果Unlock条件不成立，移除
+            if (CustomCore.CustomAdvancedBuffs.ContainsKey(__result.ToArray()[i]) &&
+                !CustomCore.CustomAdvancedBuffs[__result.ToArray()[i]].Item3())
             {
-                //如果Unlock条件不成立，移除
-                if (CustomCore.CustomAdvancedBuffs.ContainsKey(num) &&
-                    !CustomCore.CustomAdvancedBuffs[num].Item3())
-                {
-                    __result.Remove(num);
-                }
+                __result.Remove(__result.ToArray()[i]);
             }
         }
     }
