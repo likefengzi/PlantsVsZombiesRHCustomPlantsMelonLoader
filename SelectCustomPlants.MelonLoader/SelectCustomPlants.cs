@@ -133,12 +133,11 @@ public class SelectCustomPlants : MelonMod
             {
                 //如果不是融合版植物，就加载
                 if (!Enum.IsDefined(typeof(PlantType), plantType) &&
-                    PlantDataLoader.plantData[(int)plantType] != null)
+                    PlantDataLoader.plantDatas[plantType] != null)
                 {
                     plantTypes.Add(plantType);
                 }
             }
-
             //创建卡片
             for (int i = 0; i < plantTypes.Count; i++)
             {
@@ -154,8 +153,9 @@ public class SelectCustomPlants : MelonMod
                     TempCard.transform.localPosition = MyCard.transform.localPosition;
                     TempCard.transform.localScale = MyCard.transform.localScale;
                     TempCard.transform.localRotation = MyCard.transform.localRotation;
-                    //？？？
+                    //背景图片
                     TempCard.transform.GetChild(0).gameObject.SetActive(false);
+                    //卡片
                     CardUI component = TempCard.transform.GetChild(1).GetComponent<CardUI>();
                     component.gameObject.SetActive(true);
                     //修改图片
@@ -163,8 +163,8 @@ public class SelectCustomPlants : MelonMod
                     //设置数据
                     component.thePlantType = plantTypes[i];
                     component.theSeedType = (int)plantTypes[i];
-                    component.theSeedCost = PlantDataLoader.plantData[(int)plantTypes[i]].field_Public_Int32_1;
-                    component.fullCD = PlantDataLoader.plantData[(int)plantTypes[i]].field_Public_Single_2;
+                    component.theSeedCost = PlantDataLoader.plantDatas[plantTypes[i]].field_Public_Int32_1;
+                    component.fullCD = PlantDataLoader.plantDatas[plantTypes[i]].field_Public_Single_2;
                 }
             }
         }
